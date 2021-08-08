@@ -9,6 +9,7 @@ module Api
     def create
       Ticket.create(filter_params)
       Tags::AddTags.new(params[:tags]).call
+      Webhooks::DispatchTags.new({ trending_tag: Tag.order('tag_count DESC').first.tag_title }).call
 
       render json: { success: 'Records created successfully' }, status: 200
     end
